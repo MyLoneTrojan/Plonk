@@ -1,0 +1,12 @@
+MOVE:		LENGTH (in char lengths):
+
+cast		7
+jab		8
+walk		9
+slash		6
+shoot [no bow]	13
+die		6
+
+ULDR
+
+64x64

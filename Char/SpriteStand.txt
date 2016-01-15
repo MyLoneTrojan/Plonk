@@ -1,0 +1,18 @@
+Sprite standard:
+
+each frame will be of a fixed width.
+	A. the width will be specified in the top left pixel of the image
+		a. Red value  = width
+		b. Blue value = height
+		c. Alpha level will be set to maximum
+	B. the background will be transparent
+
+Each row:
+	A. will animate scrolling left to right
+	B. the bottom left pixel:
+		a. Red value   = length (measured in fram widths)
+		b. Blue value  = indicates type
+		c. Green value = position in series
+		d. Alpha level will be maximum
+
+All pixel alterations will be added after compression

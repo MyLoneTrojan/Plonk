@@ -1,0 +1,92 @@
+#ifndef WORLDMAP_H_INCLUDED
+#define WORLDMAP_H_INCLUDED
+
+/// API
+#include <SFML/Graphics.hpp>
+
+/// STD
+#include <fstream>
+#include <string>
+#include <list>
+
+namespace wmp {
+
+    class Map;
+    class Tile;
+    class Material;
+
+    bool mapSort (const Tile&, const Tile&);
+
+    std::istream& operator>> (std::istream&, Material&);
+    std::ostream& operator<< (std::ostream&, const Material&);
+
+    std::istream& operator>> (std::istream&, Tile&);
+
+    struct Material {
+        float hardness;
+        float liquidity;
+        float elasticity;
+        float top;
+        float bot;
+    };
+
+    ///TILE
+    class Tile : public sf::Drawable {
+    protected:
+        void draw(sf::RenderTarget& renT, sf::RenderStates renS) const;
+
+    public:
+        Tile(const sf::Sprite& s, const sf::Vector2i& p) : spr(s), pos(p) {};
+        Tile() {};
+
+        std::vector<Material> contents;
+
+        sf::Vector2i pos;
+        sf::Sprite spr;
+
+        void save (std::streambuf*, const std::string&);
+
+        friend std::istream& operator>> (std::istream&, Tile&);
+    };
+
+    ///MAP
+    class Map : public sf::Drawable {
+        mutable sf::Vector2u size;
+        mutable std::list<Tile> tiles;
+        mutable bool sorted;
+
+        bool (*tile_sort) (const Tile&, const Tile&);
+
+    protected:
+        void draw (sf::RenderTarget&, sf::RenderStates) const;
+
+    public:
+        Map() : size(0,0), sorted(false), tile_sort(mapSort) {};
+        Map(const std::string& s) : Map() { loadMap(s); };
+
+        void pushTile (const Tile&);
+
+        ///\//////////////////////////////////////
+        /// \return true if succeed
+        /// \param file - location of map to load
+        bool loadMap (const std::string&);
+
+        ///\//////////////////////////////////////
+        /// \return true if succeed
+        /// \param file - location of map to save (needs to be created)
+        bool saveMap (const std::string&);
+    };
+}
+
+
+/// DEFINITONS:
+    ///HEADER
+#include "WorldMapDef.h"
+
+//  user:
+//      moroga
+//
+//  pass:
+//      blazer99
+
+#endif // WORLDMAP_H_INCLUDED
