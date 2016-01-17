@@ -8,14 +8,25 @@
 /// STD
 #include <fstream>
 
-    ///////////
-    /// Tile
-        //protected
+///////////
+///
+/// Tile        CLASS
+///
+/// \@ smallest unit of a map
+///     \# embeded with information on interaction w/ world
+///
+///////////
+
+        ////////////
+        /// Draw
+        //////////
     void wmp::Tile::draw(sf::RenderTarget& renT, sf::RenderStates renS) const {
         renT.draw(spr, renS);
     }
 
-        //public
+        //////////
+        /// Save
+        ////////
     void wmp::Tile::save (std::streambuf* outS, const std::string& texFile) {
         std::ostream outF (outS);
         const sf::Texture *    tex = spr.getTexture();
@@ -34,9 +45,38 @@
             outF << contents[n];
     }
 
-    //////////
-    /// Map
-        //protected
+//////////
+///
+/// Map         CLASS
+///
+/// \@ 2-d array of Tiles
+///
+///////////
+
+
+    //////////////////
+    ///
+    /// CONSTUCTOR
+    ///
+    /// \@ defaults size      to 0
+    /// \@ defaults sorted    to 0
+    /// \@ defaults tile_sort to mapSort
+    ///     \# string loads map at file
+    ///
+    ////////////////
+
+    Map() : size(0,0), sorted(false), tile_sort(mapSort) {
+        /*--- EMPTY ---*/
+    };
+
+    Map(const std::string& s) : Map() {
+        loadMap(s);
+    };
+
+
+        ////////////
+        /// Draw
+        //////////
     void wmp::Map::draw (sf::RenderTarget& rT, sf::RenderStates rS) const {
         if (!sorted) {
             tiles.sort(tile_sort);
@@ -46,25 +86,18 @@
         for (const auto& t : tiles)
             rT.draw(t);
     }
-        //public
-    void wmp::Map::pushTile (const Tile& ti) {
-        tiles.push_back(ti);
-        sorted = false;
-    }
-    bool wmp::Map::saveMap (const std::string& file_path) {
-        std::ofstream file (file_path, std::ios::binary);
 
-        if (!file.good())
-            return false;
+    //////////////////
+    ///
+    /// Load & setup
+    ///
+    ////////////////
 
-        file << size.x
-             << size.y;
-
-        for (auto& t : tiles)
-            t.save(file.rdbuf(), "");
-        return true;
-    }
-        //public
+        ////////////////////
+        ///
+        /// LOAD - from file
+        ///
+        //////////////////////
     bool wmp::Map::loadMap (const std::string& file_path) {
         std::ifstream file (file_path, std::ios::binary);
 
@@ -82,16 +115,57 @@
         return true;
     }
 
-    ///\////////////
-    /// FUNCTIONS
+        //////////////////////
+        /// SETUP - add tile
+        ////////////////////
+    void wmp::Map::pushTile (const Tile& ti) {
+        tiles.push_back(ti);
+        sorted = false;
+    }
+
+    /////////////
+    ///
+    /// SAVE
+    ///
+    /// \@ save Map into file
+    ///
+    ////////////////
+    bool wmp::Map::saveMap (const std::string& file_path) {
+        std::ofstream file (file_path, std::ios::binary);
+
+        if (!file.good())
+            return false;
+
+        file << size.x
+             << size.y;
+
+        for (auto& t : tiles)
+            t.save(file.rdbuf(), "");
+        return true;
+    }
+        //public
+
+    ///////////////////////
+    ///
+    /// HELPER FUNCTIONS
+    ///
+    ////////////////////
+
+        //////////////////////////
+        /// \$ Map
+        /// \# default sort tiles in Map
+        ////////////////////////
     bool wmp::mapSort (const Tile& fr, const Tile& sc) {
         return (fr.pos.y > sc.pos.y) || (fr.pos.x > sc.pos.y) ? true : false;
     }
 
-    ///\////////////////////
-    /// STREAM OPERATIONS
+        ////////////////////////
+        ///
+        /// STREAM OPERATIONS
+        ///
+        /////////////////////
 
-        //material extraction
+        ///material extraction & insertion
     std::istream& wmp::operator>> (std::istream& is, Material& m) {
         return is >> m.top >> m.bot >> m.elasticity >> m.hardness >> m.liquidity;
     }
@@ -99,7 +173,7 @@
         return os << m.top << m.bot << m.elasticity << m.hardness << m.liquidity;
     }
 
-        //tile extraction
+        ///tile extraction (insert w/ save)
     std::istream& wmp::operator>> (std::istream& is, Tile& tl) {
         sf::Texture * tex;
         {   ///Setup Texture for tile sprite

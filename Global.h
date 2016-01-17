@@ -10,20 +10,90 @@
 #include <list>
 
 namespace gbl {
+
+class  Error;
+struct TexLoc;
+
+/////////////
+///
+/// DRAW
+///
+/////////
+
     std::list<sf::Drawable*> toDraw;
 
-    int isLoaded (const std::string&);
-    sf::Texture& getTex(std::size_t);
-    template <class ... Args> int makeTex (const std::string&, Args...);
+///////////////
+///
+/// TEXTURE
+///
+/// \@ remove reuse of textures
+///
+/////////////////
 
-    // Variable
-    struct TexLoc;
+    ////////////////
+    ///
+    /// OBJECTS
+    ///
+    ////////////
+
     std::vector< TexLoc > tex;
 
-    // Classes
-    class Error;
+    /////////////////
+    ///
+    /// FUCNTIONS
+    ///
+    //////////////
 
-    ///\Classes
+        //////////////////////////////
+        /// check if file is loaded
+        /// \param file path
+        /// \return position (-1 means not loaded)
+    int isLoaded (const std::string&);
+
+        //////////////////////////////
+        /// \param position in tex
+        /// \return texture of object in tex
+    sf::Texture& getTex(std::size_t);
+
+        //////////////////////////////
+        /// \param file path of texutre to creat
+        /// \param constructor args for the texture
+        ///     \# if texture with the same source file is found, then its position is returned
+        ///
+        /// \return position of created object in tex
+    template <class ... Args> int makeTex (const std::string&, Args...);
+
+        //////////////////////////////
+        /// \param index of element to be deleted from tex
+    void remove (std::size_t);
+
+    ////////////////
+    ///
+    /// CLASSES
+    ///
+    ////////////
+
+        //////////////////////////////////
+        ///Pair of texture and source file
+    struct TexLoc : std::pair<sf::Texture, std::string> {   //Remove std::pair inheritence?
+        TexLoc(const std::string&);
+
+        gbl::Error loadTex (const std::string&);
+
+        bool bad;
+
+        sf::Texture& tex  = first;
+        std::string& path = second;
+    };
+
+////////////
+///
+/// ERROR
+///
+/// \@ exception and error management
+///
+/////////////
+
     class Error : public std::exception {
         std::string text;
         std::string file;
@@ -32,95 +102,23 @@ namespace gbl {
         bool warn;
 
     public:
-        Error (const std::string& str, int co = 0) : text(str), line(co), prob(true) {};
-        Error () : line(0), prob(false), warn(false) {};
+        Error (const std::string&, int);
+        Error ();
 
-        Error& setLine (int c) {
-            prob = true;
-            line = c;
-            return *this;
-        }
-        Error& setText (const std::string& t) {
-            prob = true;
-            text = t;
-            return *this;
-        }
-        Error& setFile (const std::string& f) {
-            prob = true;
-            file = f;
-            return *this;
-        }
+        Error& setLine (int c);
+        Error& setText (const std::string& t);
+        Error& setFile (const std::string& f);
 
-        void flush () {
-            prob = false;
-        }
+        void flush ();
 
-        bool good () const {
-            return !prob || !warn;
-        }
-        bool fail () const {
-            return prob;
-        }
-        bool bad () const {
-            return warn;
-        }
+        bool good () const;
+        bool fail () const;
+        bool bad () const;
 
-        virtual const char * what () const noexcept {
-            return text.c_str();
-        }
-        virtual const int getLine () const noexcept {
-            return line;
-        }
-        virtual const char * getFile () const noexcept {
-            return file.c_str();
-        }
+        virtual const char * what () const noexcept;
+        virtual const int getLine () const noexcept;
+        virtual const char * getFile () const noexcept;
     };
-
-    struct TexLoc : std::pair<sf::Texture, std::string> {
-        TexLoc(const std::string& p) : std::pair<sf::Texture, std::string>() {
-            second = p;
-            bad = !loadTex(p).good();
-        }
-
-        gbl::Error loadTex (const std::string& p) {
-            gbl::Error param;
-            if (!tex.loadFromFile(p))
-                param.setLine(__LINE__).setFile(__FILE__).setText("Invalid File Name.");
-            return param;
-        }
-
-        bool bad;
-
-        sf::Texture& tex  = first;
-        std::string& path = second;
-    };
-
-    // Functions
-    int isLoaded (const std::string& file) {
-        for (std::size_t max = tex.size(), n(0); n < max; ++n)
-            if (file == tex[n].path)
-                return n;
-        return -1;
-    }
-
-    sf::Texture& getTex (std::size_t n) {
-        return tex[n].tex;
-    }
-
-    int makeTex (const std::string& file) {
-        int pos = isLoaded(file);
-
-        if (pos != -1)
-            return pos;
-
-        tex.emplace_back(file);
-        if (tex.back().bad) {
-            tex.pop_back();
-            return -1;
-        }
-
-        return tex.size() - 1;
-    }
 }
 
 #endif // GLOBAL_H_INCLUDED

@@ -119,8 +119,6 @@
 
             //Draw & process
             gbl::toDraw.clear();
-
-            gbl::toDraw.push_back();
         }
 
             //No overflow errors :)

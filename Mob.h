@@ -366,7 +366,7 @@
         ///////////
         /// Input
         /////////
-    void mob::grok (const Effect& act) {
+    void mob::Mob::grok (const mob::Effect& act) {
         return;
     }
 

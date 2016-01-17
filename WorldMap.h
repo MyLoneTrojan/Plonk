@@ -61,8 +61,8 @@ namespace wmp {
         void draw (sf::RenderTarget&, sf::RenderStates) const;
 
     public:
-        Map() : size(0,0), sorted(false), tile_sort(mapSort) {};
-        Map(const std::string& s) : Map() { loadMap(s); };
+        Map();
+        Map(const std::string&);
 
         void pushTile (const Tile&);
 

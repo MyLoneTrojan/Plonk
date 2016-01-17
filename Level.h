@@ -45,7 +45,7 @@ namespace lvl {
         sf::Clock gmClock;
         sf::Time timePass;
 
-        std::vector<sf::Text>
+        //std::vector<sf::Text>
 
         gbl::Error load ();
 
