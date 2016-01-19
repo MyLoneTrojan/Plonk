@@ -13,19 +13,48 @@
 
 namespace zn {
     struct Zone;
-    struct Pool;
 
+//////////////////
+///
+/// FUNCTIONS
+///
+//////////////
+
+        /// Use Zone to generate corresponding vector of Tile
     std::vector<wmp::Tile> generate (const Zone&);
 
-    struct Pool {
+////////////////
+///
+/// CLASSES
+///
+////////////
 
-        std::vector<float> prob;
+    struct ZoneResource {
+        std::vector<int> texBlock;
+        std::vector<wmp::Material> matBlock;
+        float chance;
     }
 
     struct Zone {
-        Pool opt;
+        std::vector<ZoneResource> znRs;
 
+        sf::Vector2i grid;
+
+        int northFade;
+        std::vector<ZoneResource> nnRs;
+
+        int southFade;
+        std::vector<ZoneResource> snRs;
+
+        int eastFade;
+        std::vector<ZoneResource> enRs;
+
+        int westFade;
+        std::vector<ZoneResource> wnRs;
     }
 }
+
+/// Definitions
+#define "ZoneDef"
 
 #endif // ZONE_H_INCLUDED

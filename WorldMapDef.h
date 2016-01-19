@@ -17,6 +17,28 @@
 ///
 ///////////
 
+    ////////////////////////
+    ///
+    /// CONSTRUCTOR
+    ///
+    /// \@ set respective member to respective paramater
+    ///     \# default all to default constructor
+    ///
+    /////////////////
+
+    wmp::Tile::Tile() (const sf::Sprite& s, const sf::Vector2i& p) : spr(s), pos(p) {
+        /*--- EMPTY --*/
+    };
+    wmp::Tile::Tile () {
+        /*--- EMPTY ---*/
+    };
+
+    /////////////////
+    ///
+    /// UTILITIES
+    ///
+    //////////////
+
         ////////////
         /// Draw
         //////////

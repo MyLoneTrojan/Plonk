@@ -2,6 +2,71 @@
 #define GLOBADEF_INCLUDED
 
 
+////////////////////////////
+///
+/// HELPER      FUNCTIONS
+///
+/// \@ Manage Tex (remove or reduce redundant textures)
+///
+//////////////////////
+
+        //////////////////////////////
+        /// check if file is loaded
+        /// \param file path
+        /// \return position (-1 means not loaded)
+    int gbl::isLoaded (const std::string& file) {
+        for (std::size_t max = tex.size(), n(0); n < max; ++n)
+            if (file == tex[n].path)
+                return n;
+        return -1;
+    }
+
+        //////////////////////////////
+        /// \param position in tex
+        /// \return texture of object in tex
+    sf::Texture& getTex (std::size_t n) {
+        return tex[n].tex;
+    }
+
+        //////////////////////////////
+        /// \param file path of texutre to creat
+        /// \param constructor args for the texture
+        ///     \# if texture with the same source file is found, then its position is returned
+        ///
+        /// \return position of created object in tex
+    int makeTex (const std::string& file) {
+        int pos = isLoaded(file);
+
+        if (pos != -1)
+            return pos;
+
+        tex.emplace_back(file);
+        if (tex.back().bad) {
+            tex.pop_back();
+            return -1;
+        }
+
+        return tex.size() - 1;
+    }
+
+///////////////////////////
+///
+/// TexLoc      CLASS
+///
+/////////////////////
+
+    gbl::TexLoc::TexLoc (const std::string& file_path) : /*std::pair<sf::Texture, std::string>()*/ {
+        second = file_path;
+        bad = !loadTex(file_path).good();
+    }
+
+    gbl::Error gbl::TexLoc::loadTex (const std::string& p) {
+        gbl::Error param;
+        if (!tex.loadFromFile(p))
+            param.setLine(__LINE__).setFile(__FILE__).setText("Invalid File Name.");
+        return param;
+    }
+
 ///////////////////////////
 ///
 /// ERROR       CLASS
@@ -93,70 +158,5 @@
         return file.c_str();
     }
 
-
-///////////////////////////
-///
-/// TexLoc      CLASS
-///
-/////////////////////
-
-    gbl::TexLoc::TexLoc (const std::string& file_path) : /*std::pair<sf::Texture, std::string>()*/ {
-        second = file_path;
-        bad = !loadTex(file_path).good();
-    }
-
-    gbl::Error gbl::TexLoc::loadTex (const std::string& p) {
-        gbl::Error param;
-        if (!tex.loadFromFile(p))
-            param.setLine(__LINE__).setFile(__FILE__).setText("Invalid File Name.");
-        return param;
-    }
-
-////////////////////////////
-///
-/// HELPER      FUNCTIONS
-///
-/// \@ Manage Tex (remove or reduce redundant textures)
-///
-//////////////////////
-
-        //////////////////////////////
-        /// check if file is loaded
-        /// \param file path
-        /// \return position (-1 means not loaded)
-    int gbl::isLoaded (const std::string& file) {
-        for (std::size_t max = tex.size(), n(0); n < max; ++n)
-            if (file == tex[n].path)
-                return n;
-        return -1;
-    }
-
-        //////////////////////////////
-        /// \param position in tex
-        /// \return texture of object in tex
-    sf::Texture& getTex (std::size_t n) {
-        return tex[n].tex;
-    }
-
-        //////////////////////////////
-        /// \param file path of texutre to creat
-        /// \param constructor args for the texture
-        ///     \# if texture with the same source file is found, then its position is returned
-        ///
-        /// \return position of created object in tex
-    int makeTex (const std::string& file) {
-        int pos = isLoaded(file);
-
-        if (pos != -1)
-            return pos;
-
-        tex.emplace_back(file);
-        if (tex.back().bad) {
-            tex.pop_back();
-            return -1;
-        }
-
-        return tex.size() - 1;
-    }
 
 #endif // GLOBADEF_INCLUDED

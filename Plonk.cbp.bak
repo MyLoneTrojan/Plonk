@@ -64,7 +64,6 @@
 		<Unit filename="WorldMap.h" />
 		<Unit filename="WorldMapDef.h" />
 		<Unit filename="Zone.h" />
-		<Unit filename="ZoneDef.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

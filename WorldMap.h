@@ -17,17 +17,27 @@ namespace wmp {
 
     bool mapSort (const Tile&, const Tile&);
 
+        //////////////////////////////
+        ///
+        /// Insertion & extraction
+        ///
+        //////////////////////////
+
+        ////////////////
+        /// \# material
     std::istream& operator>> (std::istream&, Material&);
     std::ostream& operator<< (std::ostream&, const Material&);
 
+        ////////////////
+        /// \# tile
     std::istream& operator>> (std::istream&, Tile&);
 
     struct Material {
         float hardness;
         float liquidity;
         float elasticity;
-        float top;
-        float bot;
+
+        sf::IntRect bounds;
     };
 
     ///TILE
@@ -36,8 +46,8 @@ namespace wmp {
         void draw(sf::RenderTarget& renT, sf::RenderStates renS) const;
 
     public:
-        Tile(const sf::Sprite& s, const sf::Vector2i& p) : spr(s), pos(p) {};
-        Tile() {};
+        Tile(const sf::Sprite&, const sf::Vector2i&);
+        Tile();
 
         std::vector<Material> contents;
 
