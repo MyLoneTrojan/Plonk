@@ -154,9 +154,11 @@
     ///
     ////////////////
 
-    mob::Mob::Mob () : delTex(true) {};
+    mob::Mob::Mob () : delTex(true), texIndex(-1) {
+        /*--- EMPTY ---*/
+    };
 
-    mob::Mob::Mob (const std::string& fileSpr, const sf::IntRect fDimen, const std::string& fileAct) : delTex(true) {
+    mob::Mob::Mob (const std::string& fileSpr, const sf::IntRect fDimen, const std::string& fileAct) : Mob() {
         if (!fileSpr.empty())
             loadSpriteFromFile(fileSpr, fDimen);
         if (!fileAct.empty())
@@ -171,9 +173,8 @@
     ///
     /////////////////
     mob::Mob::~Mob () {
-        if (delTex)
-            /*---- Load int gbl::Tex-thing-y ----*/
-            ;
+        if (texIndex >= 0)
+            gbl::remove(texIndex);
     }
 
     //////////////
@@ -216,6 +217,7 @@
 
         mobTex = &gbl::getTex(texI);
         delTex = true;
+        texIndex = mobTex;
 
         mobTex->setSmooth(true);
         mobSpr.setTexture(*mobTex);

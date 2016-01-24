@@ -13,6 +13,7 @@
 
 namespace zn {
     struct Zone;
+    struct ZoneResource;
 
 //////////////////
 ///
@@ -30,9 +31,12 @@ namespace zn {
 ////////////
 
     struct ZoneResource {
-        std::vector<int> texBlock;
+            // gbl::tex index options
+        std::vector<sf::Sprite> sprOpt;
+            // resource from which the fade forms
         std::vector<wmp::Material> matBlock;
-        float chance;
+            // probability of being a matBlock
+        float (*chanceFunc)(std::size_t);
     }
 
     struct Zone {

@@ -88,7 +88,7 @@ namespace mob {
         /// Back-end Members
         mutable sf::Sprite   mobSpr;
                 sf::Texture* mobTex;
-        bool delTex;
+        int texIndex;
 
         sf::Vector2u frameDimen;
 
@@ -108,6 +108,7 @@ namespace mob {
         /// Constructor
         Mob ();
         Mob (const std::string&, const sf::IntRect, const std::string&);
+
         ~Mob ();
 
         //////////////////////////

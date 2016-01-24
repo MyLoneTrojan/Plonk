@@ -56,8 +56,8 @@
 		<Unit filename="Collide.h" />
 		<Unit filename="Entity.h" />
 		<Unit filename="FilePaths.h" />
-		<Unit filename="GlobaDef.h" />
 		<Unit filename="Global.h" />
+		<Unit filename="GlobalDef.h" />
 		<Unit filename="Level.h" />
 		<Unit filename="LevelDef.h" />
 		<Unit filename="Mob.h" />

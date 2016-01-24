@@ -57,11 +57,10 @@ struct TexLoc;
 
         //////////////////////////////
         /// \param file path of texutre to creat
-        /// \param constructor args for the texture
         ///     \# if texture with the same source file is found, then its position is returned
         ///
         /// \return position of created object in tex
-    template <class ... Args> int makeTex (const std::string&, Args...);
+    int makeTex (const std::string&);
 
         //////////////////////////////
         /// \param index of element to be deleted from tex

@@ -49,10 +49,14 @@ namespace wmp {
         Tile(const sf::Sprite&, const sf::Vector2i&);
         Tile();
 
+        ~Tile();    //delete gbl texture (if possible)
+
         std::vector<Material> contents;
 
         sf::Vector2i pos;
         sf::Sprite spr;
+
+        int texIndex;
 
         void save (std::streambuf*, const std::string&);
 

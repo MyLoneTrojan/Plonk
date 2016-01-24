@@ -26,12 +26,25 @@
     ///
     /////////////////
 
-    wmp::Tile::Tile() (const sf::Sprite& s, const sf::Vector2i& p) : spr(s), pos(p) {
+    wmp::Tile::Tile() (const sf::Sprite& s, const sf::Vector2i& p) : spr(s), pos(p), texIndex(-1) {
         /*--- EMPTY --*/
     };
-    wmp::Tile::Tile () {
+    wmp::Tile::Tile (), texIndex(-1) {
         /*--- EMPTY ---*/
     };
+
+    /////////////////////
+    ///
+    /// DECONSTRUCTOR
+    ///
+    /// \@ delete global texutre (if possible)
+    ///
+    /////////////////
+
+    wmp::Tile::~Tile () {
+        if (texIndex >= 0)
+            gbl::remove(texIndex);
+    }
 
     /////////////////
     ///
@@ -165,7 +178,6 @@
             t.save(file.rdbuf(), "");
         return true;
     }
-        //public
 
     ///////////////////////
     ///
@@ -210,7 +222,8 @@
             is >> smooth >> repeated;
 
                 //create texture
-            int texPos = gbl::makeTex(file);
+            int texPos  = gbl::makeTex(file);
+            tl.texIndex = texPos;
             tex = &gbl::getTex(texPos);
             delete[] file;
 
