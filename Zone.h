@@ -24,6 +24,9 @@ namespace zn {
         /// Use Zone to generate corresponding vector of Tile
     std::vector<wmp::Tile> generate (const Zone&);
 
+        /// Helps fade-in inside generate
+    //void addFade (const Zone&, std::vector<wmp::Tile>&);
+
 ////////////////
 ///
 /// CLASSES
@@ -36,7 +39,7 @@ namespace zn {
             // resource from which the fade forms
         std::vector<wmp::Material> matBlock;
             // probability of being a matBlock
-        float (*chanceFunc)(std::size_t);
+        int (*chance)(std::size_t);
     }
 
     struct Zone {
