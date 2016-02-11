@@ -33,12 +33,13 @@ namespace zn {
 ///
 ////////////
 
+        /// Contain options and probability of options for certain tiles
     struct ZoneResource {
-            // gbl::tex index options
-        std::vector<sf::Sprite> sprOpt;
+            // gbl::tex index options with sprite
+        std::vector< std::pair<sf::Sprite, std::size_t> > sprOpt; // sprite not autoset
             // resource from which the fade forms
         std::vector<wmp::Material> matBlock;
-            // probability of being a matBlock
+            // probability of being a this
         int (*chance)(std::size_t);
     }
 

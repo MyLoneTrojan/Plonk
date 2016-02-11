@@ -15,7 +15,16 @@ namespace wmp {
     class Tile;
     class Material;
 
+        /// map helper function
     bool mapSort (const Tile&, const Tile&);
+
+        /// general helper function
+            // index to point
+    template <class V_TYPE>
+    sf::Vector2<V_TYPE> resolvePoint (V_TYPE, V_TYPE);
+            // point to index
+    template <class V_TYPE>
+    V_TYPE resolveIndex (sf::Vector2<V_TYPE>, sf::Vector2<V_TYPE>);
 
         //////////////////////////////
         ///

@@ -8,6 +8,40 @@
 /// STD
 #include <fstream>
 
+/////////////////////////////
+///
+/// General Helper  FUNCTION
+///
+/// \@ resolve points to and from indexes
+///
+/////////////////////////////////
+
+
+        ///////////////////////
+        /// \@ Index to point
+        /// \return Point of index in grid
+        /// \# index - displacement of item
+        /// \# dimen - width of grid
+    template <class V_TYPE>
+    sf::Vector2<V_TYPE> resolvePoint (V_TYPE index, V_TYPE dimen) {
+        sf::Vector2<V_TYPE> param;
+
+        param.x = index % dimen.x;  // excess
+        param.y = index / dimen.x;  // rows filled
+
+        return param;
+    }
+
+        ///////////////////////
+        /// \@ Point to index
+        /// \return Index of point in grid
+        /// \# point - point in grid
+        /// \# dimen - width
+    template <class V_TYPE>
+    V_TYPE resolvePointIndex (sf::Vector2<V_TYPE> point, V_TYPE dimen) {
+        return dimen*point.y /*<--rows filled; excess-->*/ + point.x;
+    }
+
 ///////////
 ///
 /// Tile        CLASS

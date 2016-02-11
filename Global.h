@@ -20,7 +20,7 @@ struct TexLoc;
 ///
 /////////
 
-    std::list<sf::Drawable*> toDraw;
+    std::vector<sf::Drawable*> toDraw;
 
 ///////////////
 ///

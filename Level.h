@@ -5,8 +5,10 @@
 #include <exception>
 
 ///API
-#include "Global.h"
-#include "Mob.h"
+#include "Global.h"     //gbl
+#include "WorldMap.h"   //wmp
+#include "Zone.h"       //zn
+#include "Mob.h"        //mob
 
 namespace lvl {
 
