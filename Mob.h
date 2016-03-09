@@ -154,7 +154,7 @@
     ///
     ////////////////
 
-    mob::Mob::Mob () : delTex(true), texIndex(-1) {
+    mob::Mob::Mob () : texIndex(-1) {
         /*--- EMPTY ---*/
     };
 
@@ -209,15 +209,13 @@
             return param;
         }
 
-        int texI = gbl::makeTex(file);
-        if (texI == -1) {
+        texIndex = gbl::makeTex(file);
+        if (texIndex == -1) {
             param.setText("Failure allocating texture or creating texture.").setLine(__LINE__).setFile(__FILE__);
             return param;
         }
 
-        mobTex = &gbl::getTex(texI);
-        delTex = true;
-        texIndex = mobTex;
+        mobTex = &gbl::getTex(texIndex);
 
         mobTex->setSmooth(true);
         mobSpr.setTexture(*mobTex);

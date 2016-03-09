@@ -43,6 +43,7 @@ namespace lvl {
         sf::Font verdana;
 
         //mob::Mob player;
+        wmp::Map worldMap;
 
         sf::Clock gmClock;
         sf::Time timePass;

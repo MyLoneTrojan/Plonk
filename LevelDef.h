@@ -71,6 +71,46 @@
             return param;
         }
 
+        {   /// LOAD ZONE
+
+            zn::Zone stzn;              // used to generate parts of tiles
+            zn::ZoneResource buffZR;    // peice of stzn
+            const sf::Vector2i tileSize (5,5);
+
+
+                /* push sprite */
+            sf::Sprite buffSpr;         // sub-peice of buffZR
+            buffSpr.setTextureRect(sf::IntRect(tileSize.x, tileSize.y, 0, 0)); //may be invalid .*. may need texture
+            buffSpr.setColor(sf::Color::Cyan);
+
+            buffZR.sprOpt.emplace_back(buffSpr, -1);
+
+                /* Push materials */
+            wmp::Material buffM;        // sub-peice of buffZR
+            buffM.hardness   = 0;
+            buffM.elasticity = 0;
+            buffM.liquidity  = 0;
+            buffM.bounds = sf::IntRect(5,5,0,0);
+
+            buffZR.matBlock.push_back(buffM);
+
+                /* set function pointer */
+            buffZR.chance = [](std::size_t) { return 100; };
+
+                /* add to stzn (zn::Zone) */
+            stzn.znRs.push_back(buffZR);
+
+            buffZR.sprOpt[0].first.setColor(sf::Color::Magenta);
+
+            stzn.nnRs.push_back(buffZR);
+            stzn.northFade = 5;
+
+            auto tileZone = zn::generate(stzn);
+
+            for (auto& tz : tileZone)
+                worldMap.addTile(tz);
+        }
+
         /*
         param = player.loadSpriteFromFile("Char/Main/dagger.png", sf::IntRect(0, 0, 64, 64));
         if (!param.good())

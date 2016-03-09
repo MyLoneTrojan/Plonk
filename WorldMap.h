@@ -1,13 +1,16 @@
 #ifndef WORLDMAP_H_INCLUDED
 #define WORLDMAP_H_INCLUDED
 
+/// HEADERS
+#include "Global.h"
+
 /// API
 #include <SFML/Graphics.hpp>
 
 /// STD
 #include <fstream>
 #include <string>
-#include <list>
+#include <set>
 
 namespace wmp {
 
@@ -67,36 +70,61 @@ namespace wmp {
 
         int texIndex;
 
-        void save (std::streambuf*, const std::string&);
+        void save (std::streambuf*, const std::string&) const;
 
         friend std::istream& operator>> (std::istream&, Tile&);
     };
 
     ///MAP
+    //template <bool (* KEY_COMPARE) (const Tile&, const Tile&)>   //KEY_COMPARE -> strick weak ordering for the tiles std::set
     class Map : public sf::Drawable {
-        mutable sf::Vector2u size;
-        mutable std::list<Tile> tiles;
-        mutable bool sorted;
-
-        bool (*tile_sort) (const Tile&, const Tile&);
+            // size of the grid: width and height
+        sf::Vector2u size;
+            // tiles held linearly and in order of drawing (FIFO)
+        std::set<Tile, bool(*)(const Tile&, const Tile&)> tiles;
 
     protected:
+            // SFML implementation
         void draw (sf::RenderTarget&, sf::RenderStates) const;
 
     public:
         Map();
         Map(const std::string&);
 
-        void pushTile (const Tile&);
+        /////////////////////////////////////////////////
+        ///
+        /// MANIPULATION of std::set tiles
+        ///
+        ////////////////////////////////////////////////
 
-        ///\//////////////////////////////////////
-        /// \return true if succeed
-        /// \param file - location of map to load
+            ////////////
+            /// INSERT
+            //////////
+                /// \@ add tile in its sorted position within tiles
+        void addTile  (const Tile&);
+                /// \@ std::move paramater to tiles
+        void moveTileSet (std::set<Tile, bool(*)(const Tile&, const Tile&)>&&);
+
+            //////////
+            /// Find - return iterator to item equivilent to the parameter (with const variant)
+            ////////
+        std::set<Tile>::iterator find (const Tile&) const;
+        std::set<Tile>::iterator find (const Tile&);
+
+        /////////////////////////
+        ///
+        /// FILE MANIPULATION
+        ///
+        /////////////////////
+
+            ///\//////////////////////////////////////
+            /// \return true if succeed
+            /// \param file - location of map to load
         bool loadMap (const std::string&);
 
-        ///\//////////////////////////////////////
-        /// \return true if succeed
-        /// \param file - location of map to save (needs to be created)
+            ///\//////////////////////////////////////
+            /// \return true if succeed
+            /// \param file - location of map to save (needs to be created)
         bool saveMap (const std::string&);
     };
 }

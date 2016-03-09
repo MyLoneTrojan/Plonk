@@ -41,9 +41,11 @@ namespace zn {
         std::vector<wmp::Material> matBlock;
             // probability of being a this
         int (*chance)(std::size_t);
-    }
+    };
 
     struct Zone {
+        Zone () : northFade(0), southFade(0), eastFade(0), westFade(0) {};
+
         std::vector<ZoneResource> znRs;
 
         sf::Vector2i grid;
@@ -59,10 +61,10 @@ namespace zn {
 
         int westFade;
         std::vector<ZoneResource> wnRs;
-    }
+    };
 }
 
 /// Definitions
-#define "ZoneDef"
+#include "ZoneDef.h"
 
 #endif // ZONE_H_INCLUDED

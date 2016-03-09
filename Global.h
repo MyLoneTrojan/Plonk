@@ -6,6 +6,7 @@
 
 /// STD
 #include <iostream>
+#include <vector>
 #include <utility>
 #include <list>
 
@@ -13,6 +14,13 @@ namespace gbl {
 
 class  Error;
 struct TexLoc;
+struct TexPos;
+
+struct texPos {
+    std::list<TexLoc>::iterator list_iter;
+
+};
+
 
 /////////////
 ///
@@ -36,7 +44,8 @@ struct TexLoc;
     ///
     ////////////
 
-    std::vector< TexLoc > tex;
+    std::list< TexLoc > tex;
+    typedef std::list<TexLoc>::iterator list_iter;
 
     /////////////////
     ///
@@ -48,23 +57,23 @@ struct TexLoc;
         /// check if file is loaded
         /// \param file path
         /// \return position (-1 means not loaded)
-    int isLoaded (const std::string&);
+    list_iter isLoaded (const std::string&);
 
         //////////////////////////////
         /// \param position in tex
         /// \return texture of object in tex
-    sf::Texture& getTex(std::size_t);
+    sf::Texture& getTex(list_iter);
 
         //////////////////////////////
         /// \param file path of texutre to creat
         ///     \# if texture with the same source file is found, then its position is returned
         ///
         /// \return position of created object in tex
-    int makeTex (const std::string&);
+    list_iter makeTex (const std::string&);
 
         //////////////////////////////
         /// \param index of element to be deleted from tex
-    void remove (std::size_t);
+    void remove (list_iter);
 
     ////////////////
     ///
@@ -119,6 +128,9 @@ struct TexLoc;
         virtual const char * getFile () const noexcept;
     };
 }
+
+/// Definitions
+#include "GlobalDef.h"
 
 #endif // GLOBAL_H_INCLUDED
 

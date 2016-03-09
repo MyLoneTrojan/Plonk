@@ -60,10 +60,10 @@
     ///
     /////////////////
 
-    wmp::Tile::Tile() (const sf::Sprite& s, const sf::Vector2i& p) : spr(s), pos(p), texIndex(-1) {
+    wmp::Tile::Tile (const sf::Sprite& s, const sf::Vector2i& p) : spr(s), pos(p), texIndex(-1) {
         /*--- EMPTY --*/
     };
-    wmp::Tile::Tile (), texIndex(-1) {
+    wmp::Tile::Tile () : texIndex(-1) {
         /*--- EMPTY ---*/
     };
 
@@ -96,7 +96,7 @@
         //////////
         /// Save
         ////////
-    void wmp::Tile::save (std::streambuf* outS, const std::string& texFile) {
+    void wmp::Tile::save (std::streambuf* outS, const std::string& texFile) const {
         std::ostream outF (outS);
         const sf::Texture *    tex = spr.getTexture();
                   bool      smooth = tex->isSmooth();
@@ -134,11 +134,11 @@
     ///
     ////////////////
 
-    Map() : size(0,0), sorted(false), tile_sort(mapSort) {
+    wmp::Map::Map() : size(0,0) {
         /*--- EMPTY ---*/
     };
 
-    Map(const std::string& s) : Map() {
+    wmp::Map::Map(const std::string& s) : Map() {
         loadMap(s);
     };
 
@@ -147,11 +147,6 @@
         /// Draw
         //////////
     void wmp::Map::draw (sf::RenderTarget& rT, sf::RenderStates rS) const {
-        if (!sorted) {
-            tiles.sort(tile_sort);
-            sorted = true;
-        }
-
         for (const auto& t : tiles)
             rT.draw(t);
     }
@@ -179,17 +174,39 @@
         for (unsigned n(0); n < size.x*size.y; ++n) {
             Tile buf;
             file >> buf;
-            tiles.push_back(std::move(buf));
+            tiles.insert(std::move(buf));
         }
         return true;
     }
 
+    ///////////////////
+    ///
+    /// Tile access
+    ///
+    ///////////////
+
         //////////////////////
         /// SETUP - add tile
         ////////////////////
-    void wmp::Map::pushTile (const Tile& ti) {
-        tiles.push_back(ti);
-        sorted = false;
+    void wmp::Map::addTile (const Tile& ti) {
+        tiles.insert(ti);
+    }
+
+        //////////////////////////////
+        /// SETUP - tiles as a whole
+        ////////////////////////////
+    void wmp::Map::moveTileSet (std::set<Tile, bool(*)(const Tile&, const Tile&)>&& tobj) {
+        tiles = std::move(tobj);
+    }
+
+        //////////////////////////////
+        /// INFORTMATION - find tile
+        ////////////////////////////
+    std::set<wmp::Tile>::const_iterator wmp::Map::find (const Tile& ti) const {
+        return tiles.find(ti);
+    }
+    std::set<wmp::Tile>::iterator wmp::Map::find (const Tile& ti) {
+        return tiles.find(ti);
     }
 
     /////////////
@@ -224,7 +241,7 @@
         /// \# default sort tiles in Map
         ////////////////////////
     bool wmp::mapSort (const Tile& fr, const Tile& sc) {
-        return (fr.pos.y > sc.pos.y) || (fr.pos.x > sc.pos.y) ? true : false;
+        return (fr.pos.y > sc.pos.y) || (fr.pos.x > sc.pos.y);
     }
 
         ////////////////////////
@@ -235,10 +252,10 @@
 
         ///material extraction & insertion
     std::istream& wmp::operator>> (std::istream& is, Material& m) {
-        return is >> m.top >> m.bot >> m.elasticity >> m.hardness >> m.liquidity;
+        return is >> m.bounds.left >> m.bounds.top >> m.bounds.width >> m.bounds.height >> m.elasticity >> m.hardness >> m.liquidity;
     }
     std::ostream& wmp::operator<< (std::ostream& os, const Material& m) {
-        return os << m.top << m.bot << m.elasticity << m.hardness << m.liquidity;
+        return os << m.bounds.left << m.bounds.top << m.bounds.width << m.bounds.height << m.elasticity << m.hardness << m.liquidity;
     }
 
         ///tile extraction (insert w/ save)
@@ -256,7 +273,7 @@
             is >> smooth >> repeated;
 
                 //create texture
-            int texPos  = gbl::makeTex(file);
+            int texPos  = gbl::makeTex(std::string(file, length));
             tl.texIndex = texPos;
             tex = &gbl::getTex(texPos);
             delete[] file;

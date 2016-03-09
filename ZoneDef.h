@@ -23,7 +23,7 @@
             std::size_t resIndex = rand() % zone.znRs.size();
             std::size_t sprIndex = rand() % zone.znRs[resIndex].sprOpt.size();
 
-            tileGrid.emplace_back(zone.znRs[resIndex].sprOpt[sprIndex],     //sprite in question
+            tileGrid.emplace_back(zone.znRs[resIndex].sprOpt[sprIndex].first,     //sprite in question
                                   wmp::resolvePoint<int>(n, zone.grid.x));  //position in tileGrid(graphicly);
         }
 
@@ -33,24 +33,24 @@
             bool south = pos.y >= zone.grid.y - zone.southFade;
 
             int totalPool = 0;      // sum of pool's elements
-            std::vector< std::pair<int, ZoneResource*> > pool;
+            std::vector< std::pair<int, const ZoneResource*> > pool;
 
-            std::vector< std::vector<ZoneResource>* > options;
+            std::vector< const std::vector<ZoneResource>* > options;
 
                 // Append zone resource vector*-s to options
                     // then append (probability + totalPool) to pool (so the appended item's distance from prev is equal it's probablity. equal distance means probablity is maintained)
                     // then increase totalPool
             if (north) {
-                options.push_back(zone.nnRs);
-                for (ZoneResource& zr : zone.nnRs) {
-                    pool.push_back(zr.chance(pos.y) + totalPool, &zr);
+                options.push_back(&zone.nnRs);
+                for (const ZoneResource& zr : zone.nnRs) {
+                    pool.emplace_back(zr.chance(pos.y) + totalPool, &zr);
                     totalPool += zr.chance(pos.y);
                 }
             }
             if (south) {
-                options.push_back(zone.snRs);
-                for (ZoneResource& zr : zone.snRs) {
-                    pool.push_back(zr.chance(pos.y) + totalPool, &zr);
+                options.push_back(&zone.snRs);
+                for (const ZoneResource& zr : zone.snRs) {
+                    pool.emplace_back(zr.chance(pos.y) + totalPool, &zr);
                     totalPool += zr.chance(pos.y);
                 }
             }
@@ -63,32 +63,32 @@
                     // Append zone resource vector*-s to options
                         // then append probability (+ total pool (for some reason)) to pool & increase totalPool
                 if (west) {
-                    options.push_back(zone.wnRs);
+                    options.push_back(&zone.wnRs);
                     pops++;
 
-                    for (ZoneResource& zr : zone.wnRs) {
-                        pool.push_back(zr.chance(pos.x) + totalPool, &zr);
+                    for (const ZoneResource& zr : zone.wnRs) {
+                        pool.emplace_back(zr.chance(pos.x) + totalPool, &zr);
                         totalPool += zr.chance(pos.x);
                     }
                 }
                 if (east) {
-                    options.push_back(zone.enRs);
+                    options.push_back(&zone.enRs);
                     pops++;
 
-                    for (ZoneResource& zr : zone.enRs) {
-                        pool.push_back(zr.chance(pos.x) + totalPool, &zr);
+                    for (const ZoneResource& zr : zone.enRs) {
+                        pool.emplace_back(zr.chance(pos.x) + totalPool, &zr);
                         totalPool += zr.chance(pos.x);
                     }
                 }
 
                 std::size_t res =  rand() % totalPool;
 
-                for (const std::pair<int, ZoneResource*>& ch : pool) {
-                    if (res =< ch.first){
+                for (const auto& ch : pool) {
+                    if (res <= ch.first){
                         //change with ch.second
                         wmp::Tile alt_tile;
 
-                        sprIndex = rand() % ch.second->sprOpt.size();
+                        std::size_t sprIndex = rand() % ch.second->sprOpt.size();
                         alt_tile.spr = ch.second->sprOpt[sprIndex].first;
                         alt_tile.texIndex = ch.second->sprOpt[sprIndex].second;
 
